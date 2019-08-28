@@ -10,6 +10,7 @@ import UIKit
 
 class PostDetailTableViewController: UITableViewController {
 
+    @IBOutlet weak var detailNavItem: UINavigationItem!
     @IBOutlet weak var postImageView: UIImageView!
     
     var post: Post? {
@@ -25,6 +26,7 @@ class PostDetailTableViewController: UITableViewController {
     func updateViews() {
         loadViewIfNeeded()
         guard let post = post else { return }
+        detailNavItem.title = post.caption
         postImageView.image = post.photo
         tableView.reloadData()
     }
@@ -40,7 +42,7 @@ class PostDetailTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath)
         guard let post = post else { return UITableViewCell() }
         let comment = post.comments[indexPath.row]
-        
+    
         cell.textLabel?.text = comment.text
         cell.detailTextLabel?.text = "\(comment.timestamp)"
     
@@ -78,9 +80,16 @@ class PostDetailTableViewController: UITableViewController {
         present(alertController, animated: true)
     }
     
-    @IBAction func shareButtonTapped(_ sender: Any) {
-    }
     @IBAction func followButtonTapped(_ sender: Any) {
     }
+    
+    @IBAction func shareButtonTapped(_ sender: Any) {
+        guard let post = post else { return }
+        let activityController = UIActivityViewController(activityItems: [post.caption], applicationActivities: nil )
+        present(activityController, animated: true, completion: nil)
+        
+    }
+    
+    
     
 }

@@ -29,5 +29,29 @@ class Post {
         self.comments = comments
         self.photo = photo
     }
-    
+}
+
+extension Post : SearchableRecord {
+    func matches(searchTerm: String) -> Bool {
+        var doesContain: Bool = false
+        for comment in comments {
+            if comment.text.lowercased().contains(searchTerm.lowercased()) {
+                doesContain = true
+            }
+        }
+        if self.caption.lowercased().contains(searchTerm.lowercased()) || doesContain {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+extension Post : Equatable {
+    static func ==(lhs: Post, rhs: Post) -> Bool {
+        return lhs.comments == rhs.comments &&
+            lhs.caption == rhs.caption &&
+            lhs.timestamp == rhs.timestamp &&
+            lhs.photo == rhs.photo
+    }
 }

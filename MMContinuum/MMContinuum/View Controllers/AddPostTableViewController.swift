@@ -10,12 +10,18 @@ import UIKit
 
 class AddPostTableViewController: UITableViewController {
 
-    @IBOutlet weak var postImageView: UIImageView!
-    @IBOutlet weak var selectImageButton: UIButton!
+    var newImage: UIImage?
+    
     @IBOutlet weak var captionTextField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        captionTextField.text = ""
     }
 
     // MARK: - Table view data source
@@ -29,19 +35,9 @@ class AddPostTableViewController: UITableViewController {
 //
 //        return cell
 //    }
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(true)
-        postImageView.image = nil
-        captionTextField.text = ""
-        selectImageButton.setTitle("Select Image", for: .normal)
-    }
-    @IBAction func addImageButtonTapped(_ sender: Any) {
-        selectImageButton.setTitle("", for: .normal)
-        postImageView.image = UIImage(named: "spaceEmptyState.jpg")
-    }
-    
+
     @IBAction func addPostButtonTapped(_ sender: Any) {
-        guard let image = postImageView.image, let text = captionTextField.text else { return }
+        guard let image = newImage, let text = captionTextField.text else { return }
         if text != "" {
             PostController.shared.createPostWith(image: image, caption: text) { (_) in }
             self.tabBarController?.selectedIndex = 0
@@ -52,14 +48,19 @@ class AddPostTableViewController: UITableViewController {
         self.tabBarController?.selectedIndex = 0
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "toImageSelectorVC" {
+            let imageSelector = segue.destination as? PhotoSelectorViewController
+            imageSelector?.delegate = self
+        }
     }
-    */
 
 }
+
+extension AddPostTableViewController : PhotoSelectorViewControllerDelegate {
+    func photoSelectorViewControllerImage(image: UIImage) {
+        newImage = image
+    }
+}
+
+

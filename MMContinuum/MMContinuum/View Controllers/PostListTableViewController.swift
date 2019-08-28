@@ -10,25 +10,43 @@ import UIKit
 
 class PostListTableViewController: UITableViewController {
 
+    @IBOutlet weak var settingsButton: UIBarButtonItem!
+    @IBOutlet weak var postSearchBar: UISearchBar!
+    
+    var resultsArray: [Post] = []
+    var isSearching: Bool = false
+    var dataSource: [Post] {
+        if isSearching {
+            return resultsArray
+        } else {
+            return PostController.shared.posts
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        postSearchBar.delegate = self
         tableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        resultsArray = PostController.shared.posts
+        postSearchBar.text = ""
+        isSearching = false
         tableView.reloadData()
+        
     }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return PostController.shared.posts.count
+        return resultsArray.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostTableViewCell else { return UITableViewCell() }
-        let post = PostController.shared.posts[indexPath.row]
+        let post = resultsArray[indexPath.row]
         cell.post = post
         
         return cell
@@ -52,9 +70,32 @@ class PostListTableViewController: UITableViewController {
         if segue.identifier == "toDetailVC" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 guard let destinationVC = segue.destination as? PostDetailTableViewController else { return }
-                let post = PostController.shared.posts[indexPath.row]
+                let post = resultsArray[indexPath.row]
                 destinationVC.post = post
             }
         }
     }
+}
+
+extension PostListTableViewController : UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        resultsArray = PostController.shared.posts.filter { $0.matches(searchTerm: searchText) }
+        self.tableView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        resultsArray = PostController.shared.posts
+        postSearchBar.text = ""
+        postSearchBar.resignFirstResponder()
+        self.tableView.reloadData()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        isSearching = true
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        isSearching = false
+    }
+    
 }
