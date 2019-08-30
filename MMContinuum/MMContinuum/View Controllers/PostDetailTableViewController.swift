@@ -12,12 +12,15 @@ class PostDetailTableViewController: UITableViewController {
 
     @IBOutlet weak var detailNavItem: UINavigationItem!
     @IBOutlet weak var postImageView: UIImageView!
+    @IBOutlet weak var followButtonText: UIButton!
     
     var post: Post? {
         didSet {
             updateViews()
         }
     }
+    
+    var isFollowing: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +37,15 @@ class PostDetailTableViewController: UITableViewController {
         guard let post = post else { return }
         detailNavItem.title = post.caption
         postImageView.image = post.photo
+        PostController.shared.checkSubscription(to: post) { (following) in
+            DispatchQueue.main.async {
+                if following {
+                    self.followButtonText.setTitle("Unfollow", for: .normal)
+                } else {
+                    self.followButtonText.setTitle("Follow", for: .normal)
+                }
+            }
+        }
         tableView.reloadData()
     }
     
@@ -90,6 +102,12 @@ class PostDetailTableViewController: UITableViewController {
     }
     
     @IBAction func followButtonTapped(_ sender: Any) {
+        guard let post = post else { return }
+        PostController.shared.toggleSubscriptionTo(commentsFor: post) { (status) in
+            DispatchQueue.main.async {
+                self.isFollowing = status
+            }
+        }
     }
     
     @IBAction func shareButtonTapped(_ sender: Any) {

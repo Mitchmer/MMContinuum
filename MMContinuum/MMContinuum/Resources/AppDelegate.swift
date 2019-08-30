@@ -8,6 +8,7 @@
 
 import UIKit
 import CloudKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -43,6 +44,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("Successfully retrieved a logged-in user.")
             } else {
                 print("User has not logged in.")
+            }
+        }
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .sound, .alert]) { (didUserAllow, error) in
+            if let error = error {
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+            }
+            if didUserAllow {
+                UIApplication.shared.registerForRemoteNotifications()
             }
         }
         

@@ -82,7 +82,7 @@ class PostListTableViewController: UITableViewController {
         if segue.identifier == "toDetailVC" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 guard let destinationVC = segue.destination as? PostDetailTableViewController else { return }
-                let post = resultsArray[indexPath.row]
+                let post = dataSource[indexPath.row]
                 destinationVC.post = post
             }
         }
