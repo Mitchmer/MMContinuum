@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		996757DC231879EF006AB7A0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996757DB231879EF006AB7A0 /* Constants.swift */; };
+		996757DF2318878B006AB7A0 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 996757DE2318878B006AB7A0 /* CloudKit.framework */; };
 		9997DADB2316F99E00FE9861 /* SearchableRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9997DADA2316F99E00FE9861 /* SearchableRecord.swift */; };
 		9997DADD23172C5300FE9861 /* PhotoSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9997DADC23172C5300FE9861 /* PhotoSelectorViewController.swift */; };
 		99A5AB2B2315BB5D004C978D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A5AB2A2315BB5D004C978D /* AppDelegate.swift */; };
@@ -23,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		996757DB231879EF006AB7A0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		996757DE2318878B006AB7A0 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		9997DADA2316F99E00FE9861 /* SearchableRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchableRecord.swift; sourceTree = "<group>"; };
 		9997DADC23172C5300FE9861 /* PhotoSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorViewController.swift; sourceTree = "<group>"; };
 		99A5AB272315BB5D004C978D /* MMContinuum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMContinuum.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,17 +50,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				996757DF2318878B006AB7A0 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		996757DD2318878B006AB7A0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				996757DE2318878B006AB7A0 /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		99A5AB1E2315BB5D004C978D = {
 			isa = PBXGroup;
 			children = (
 				99A5AB292315BB5D004C978D /* MMContinuum */,
 				99A5AB282315BB5D004C978D /* Products */,
+				996757DD2318878B006AB7A0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -89,6 +103,7 @@
 				99A5AB312315BB5F004C978D /* Assets.xcassets */,
 				99A5AB332315BB5F004C978D /* LaunchScreen.storyboard */,
 				99A5AB362315BB5F004C978D /* Info.plist */,
+				996757DB231879EF006AB7A0 /* Constants.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -163,6 +178,9 @@
 					99A5AB262315BB5D004C978D = {
 						CreatedOnToolsVersion = 10.3;
 						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
 							com.apple.iCloud = {
 								enabled = 1;
 							};
@@ -207,6 +225,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				99A5AB2B2315BB5D004C978D /* AppDelegate.swift in Sources */,
+				996757DC231879EF006AB7A0 /* Constants.swift in Sources */,
 				99A5AB492315C0F4004C978D /* Comment.swift in Sources */,
 				9997DADB2316F99E00FE9861 /* SearchableRecord.swift in Sources */,
 				99A5AB402315BD45004C978D /* PostListTableViewController.swift in Sources */,

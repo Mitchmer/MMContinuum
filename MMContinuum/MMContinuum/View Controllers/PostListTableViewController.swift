@@ -26,27 +26,28 @@ class PostListTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         postSearchBar.delegate = self
-        tableView.reloadData()
+        fullSync(completion: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        resultsArray = PostController.shared.posts
-        postSearchBar.text = ""
-        isSearching = false
-        tableView.reloadData()
-        
+        DispatchQueue.main.async {
+            self.resultsArray = PostController.shared.posts
+//            self.postSearchBar.text = ""
+//            self.isSearching = false
+            self.tableView.reloadData()
+        }
     }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsArray.count
+        return dataSource.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostTableViewCell else { return UITableViewCell() }
-        let post = resultsArray[indexPath.row]
+        let post = dataSource[indexPath.row]
         cell.post = post
         
         return cell
@@ -63,6 +64,17 @@ class PostListTableViewController: UITableViewController {
         }    
     }
     */
+    
+    func fullSync(completion: ((Bool) -> Void)?) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        PostController.shared.fetchPosts { (posts) in
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                self.tableView.reloadData()
+                completion?(posts != nil)
+            }
+        }
+    }
 
     // MARK: - Navigation
 

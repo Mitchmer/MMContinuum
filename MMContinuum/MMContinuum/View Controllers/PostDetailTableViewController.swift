@@ -21,6 +21,12 @@ class PostDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        guard let post = post else { return }
+        PostController.shared.fetchComments(for: post) { (_) in
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
     
     func updateViews() {
@@ -30,6 +36,7 @@ class PostDetailTableViewController: UITableViewController {
         postImageView.image = post.photo
         tableView.reloadData()
     }
+    
 
     // MARK: - Table view data source
 
@@ -70,8 +77,10 @@ class PostDetailTableViewController: UITableViewController {
             guard let postText = alertController.textFields?.first?.text, let post = self.post else { return }
             if postText != "" {
                 PostController.shared.addComment(text: postText, post: post, completion: { (_) in
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
                 })
-                self.tableView.reloadData()
             }
         }
         let cancelPostAction = UIAlertAction(title: "Cancel", style: .destructive)

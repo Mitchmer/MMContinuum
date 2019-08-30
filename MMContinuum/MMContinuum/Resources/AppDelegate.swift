@@ -7,15 +7,45 @@
 //
 
 import UIKit
+import CloudKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     var window: UIWindow?
 
+    func accountStatus(completion: @escaping (Bool) -> Void) {
+        CKContainer.default().accountStatus { (status, error) in
+            if let error = error {
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+                completion(false)
+                return
+            }
+            
+            DispatchQueue.main.async {
+                let tabBarController = self.window?.rootViewController
+                if status != .available {
+                    completion(true)
+                    return
+                } else {
+                    tabBarController?.presentSimpleAlertWith(title: "Sign in to iCloud", message: "There was a problem with your account.")
+                    completion(false)
+                    return
+                }
+            }
+        }
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        accountStatus { (success) in
+            if success {
+                print("Successfully retrieved a logged-in user.")
+            } else {
+                print("User has not logged in.")
+            }
+        }
+        
         return true
     }
 
@@ -42,5 +72,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+}
+
+extension UIViewController {
+    func presentSimpleAlertWith(title: String, message: String?) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Got it.", style: .destructive, handler: { (alert) in }))
+    }
 }
 

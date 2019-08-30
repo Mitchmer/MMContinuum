@@ -20,35 +20,33 @@ class PhotoSelectorViewController: UIViewController {
     
     weak var delegate: PhotoSelectorViewControllerDelegate?
     
+    let currentDevice = UIDevice.current.localizedModel
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         selectImageButton.setTitle("", for: .normal)
     }
     
-    @IBAction func selectImageButtonTapped(_ sender: Any) {
-        presentImagePicker()
+    @IBAction func selectImageButtonTapped(_ sender: UIButton) {
+        presentImagePicker(sender: sender)
     }
     
     
 }
 extension PhotoSelectorViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func presentImagePicker() {
-        let alertController = UIAlertController(title: "Select Image", message: "SHOW ME WHAT YOU GOT", preferredStyle: .actionSheet)
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            alertController.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (_) in
-                imagePicker.sourceType = UIImagePickerController.SourceType.camera
-                self.present(imagePicker, animated: true, completion: nil)
-            }))
+    func presentImagePicker(sender: UIButton) {
+        
+        if currentDevice == "iPhone" {
+            let alertController = UIAlertController(title: "Select Image", message: "SHOW ME WHAT YOU GOT", preferredStyle: .actionSheet)
+            alertControllerSetUp(controller: alertController)
+        } else {
+            let alertController = UIAlertController(title: "Select Image", message: "SHOW ME WHAT YOU GOT", preferredStyle: .actionSheet)
+            if let popoverController = alertController.popoverPresentationController {
+                popoverController.sourceRect = sender.frame
+                popoverController.sourceView = sender as UIView
+            }
+            alertControllerSetUp(controller: alertController)
         }
-        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            alertController.addAction(UIAlertAction(title: "Library", style: .default, handler: { (_) in
-                imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
-                self.present(imagePicker, animated: true, completion: nil)
-            }))
-        }
-        present(alertController, animated: true)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -57,5 +55,23 @@ extension PhotoSelectorViewController : UIImagePickerControllerDelegate, UINavig
             postImageView.image = image
             delegate?.photoSelectorViewControllerImage(image: image)
         }
+    }
+    
+    func alertControllerSetUp(controller: UIAlertController) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            controller.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (_) in
+                imagePicker.sourceType = UIImagePickerController.SourceType.camera
+                self.present(imagePicker, animated: true, completion: nil)
+            }))
+        }
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            controller.addAction(UIAlertAction(title: "Library", style: .default, handler: { (_) in
+                imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
+                self.present(imagePicker, animated: true, completion: nil)
+            }))
+        }
+        present(controller, animated: true)
     }
 }

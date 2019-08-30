@@ -24,7 +24,7 @@ class PostTableViewCell: UITableViewCell {
         guard let post = post else { return }
         postImageView.image = post.photo
         captionLabel.text = post.caption
-        commentsLabel.text = String(post.comments.count)
+        commentsLabel.text = String(post.commentCount)
     }
     
     override func awakeFromNib() {
